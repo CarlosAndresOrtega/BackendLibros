@@ -1,98 +1,195 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🧠 BookScraper API – NestJS + PostgreSQL
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Una API desarrollada con **NestJS + TypeORM** que permite hacer scraping de libros, almacenarlos en una base de datos PostgreSQL, y acceder a ellos mediante filtros. Forma parte de la prueba técnica para **Double V Partners**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 📋 Tabla de Contenidos
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- [🎯 Descripción General](#-descripción-general)
+- [🏗️ Estructura del Proyecto](#%EF%B8%8F-estructura-del-proyecto)
+- [🚀 Inicio Rápido](#-inicio-rápido)
+- [🌍 Variables de Entorno](#-variables-de-entorno)
+- [🧪 Endpoints Principales](#-endpoints-principales)
+- [🗃️ Base de Datos](#-base-de-datos)
+- [🎨 Tecnologías Usadas](#-tecnologías-usadas)
+- [📦 Scripts Útiles](#-scripts-útiles)
+- [🙋‍♂️ Autor](#-autor)
 
-## Project setup
+---
 
-```bash
-$ npm install
+## 🎯 Descripción General
+
+Este backend incluye funcionalidades como:
+
+- 🔐 Registro y login con JWT
+- 🔎 Scraping de libros (título, precio, rating, stock, etc.)
+- 📄 Almacenamiento en PostgreSQL con TypeORM
+- 🧾 Filtros por categoría, rating, stock, etc.
+- 🛡️ Protecciones básicas de seguridad (autenticación, DTOs, validaciones)
+
+---
+
+## 🏗️ Estructura del Proyecto
+
+```
+book-scraper-api/
+├── src/                                     # Código fuente de la aplicación
+│   ├── auth/                                # Módulo de autenticación (login, register)
+│   ├── books/                               # Lógica de scraping y libros
+│   ├── users/                               # Módulo de usuarios
+│   ├── app.module.ts                        # Módulo raíz de NestJS
+│   └── main.ts                              # Archivo principal de arranque
+├── schema.sql                               # Estructura de la base de datos (dump en SQL)
+├── postgress-books.postman_collection.json  # Colección de Postman para probar los endpoints
+├── package.json                             # Dependencias y scripts de Node.js
+└── README.md                                # Documentación del proyecto
+
 ```
 
-## Compile and run the project
+---
+
+## 🚀 Inicio Rápido
+
+### 📋 Requisitos Previos
+
+- Node.js 18+
+- Docker y Docker Compose
+- PostgreSQL (puedes usar Docker)
+
+### ⚡ Instalación
 
 ```bash
-# development
-$ npm run start
+# 1️⃣ Clonar el repositorio
+git clone https://github.com/CarlosAndresOrtega/BackendLibros.git
+cd BackendLibros
 
-# watch mode
-$ npm run start:dev
+# 2️⃣ Instalar dependencias
+npm install
 
-# production mode
-$ npm run start:prod
+# 3️⃣ Crear base de datos y cargar estructura
+docker run --name postgres-books -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+createdb -U postgres booksdb
+psql -U postgres -d booksdb -f schema.sql
 ```
 
-## Run tests
+### ▶️ Levantar la API
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev
 ```
 
-## Deployment
+La API estará disponible en: [http://localhost:3000](http://localhost:3000)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+---
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 🌍 Variables de Entorno
+
+Crea un archivo `.env` en la raíz con el siguiente contenido (si usas configuración dinámica):
+
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASS=postgres
+DB_NAME=booksdb
+JWT_SECRET=supersecret
+```
+
+> Alternativamente, la conexión puede estar en `TypeOrmModule.forRoot()` en código.
+
+---
+
+## 🧪 Endpoints Principales
+
+### 🔐 Auth
+
+| Método | Endpoint       | Descripción             | Protegido |
+| ------ | -------------- | ----------------------- | --------- |
+| POST   | /auth/register | Registrar usuario nuevo | ❌        |
+| POST   | /auth/login    | Login y retorno de JWT  | ❌        |
+
+### 📚 Books
+
+| Método | Endpoint                                   | Descripción                                                 | Protegido |
+| ------ | ------------------------------------------ | ----------------------------------------------------------- | --------- |
+| GET    | /books                                     | Obtener todos los libros (paginación, filtros, orden)       | ✅        |
+| GET    | /books/:id                                 | Obtener un libro por ID                                     | ✅        |
+| DELETE | /books/:id                                 | Eliminar un libro por ID                                    | ✅        |
+| GET    | /books?rating=4                            | Filtrar libros por rating                                   | ✅        |
+| GET    | /books?category=A&priceMin=10&priceMax=100 | Filtrar por categoría y precio                              | ✅        |
+| GET    | /books/filters                             | Obtener filtros disponibles (categorías y rangos de precio) | ✅        |
+| GET    | /books/scrape-books?page=1&totalPages=2    | Scrapear libros con paginación                              | ✅        |
+| POST   | /books/scrape                              | Scrapear libros (versión alternativa, sin paginación)       | ✅        |
+
+### 👤 Users
+
+| Método | Endpoint   | Descripción               | Protegido |
+| ------ | ---------- | ------------------------- | --------- |
+| POST   | /users     | Crear nuevo usuario       | ❌        |
+| GET    | /users     | Listar todos los usuarios | ❌        |
+| GET    | /users/:id | Obtener usuario por ID    | ❌        |
+
+📬 Postman Collection
+Para facilitar las pruebas de los endpoints disponibles, se incluye una colección de Postman:
+postgress-books.postman_collection.json
+
+Puedes importarla directamente en Postman para probar el login, registro, scraping y operaciones CRUD sobre libros. Asegúrate de autenticarte primero para acceder a los endpoints protegidos.
+
+---
+
+> Las rutas protegidas requieren el header `Authorization: Bearer <token>`
+
+---
+
+## 🗃️ Base de Datos
+
+- Motor: PostgreSQL
+- ORM: TypeORM
+- Estructura disponible en el archivo `schema.sql`
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Importar estructura manualmente:
+psql -U postgres -d booksdb -f schema.sql
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+También puedes configurar migraciones con TypeORM si deseas mayor control.
 
-## Resources
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+## 🎨 Tecnologías Usadas
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+| Tecnología | Versión | Descripción                       |
+| ---------- | ------- | --------------------------------- |
+| NestJS     | ^10.x   | Framework backend                 |
+| TypeORM    | ^0.3.x  | ORM para PostgreSQL               |
+| PostgreSQL | 17.5    | Motor de base de datos relacional |
+| JWT        | ^9.x    | Autenticación basada en tokens    |
+| Docker     | latest  | Contenedor para base de datos     |
+| pg_dump    | 17.5    | Exportador de esquema `.sql`      |
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 📦 Scripts Útiles
 
-## Stay in touch
+```bash
+npm run start:dev      # Ejecuta con hot-reload (desarrollo)
+npm run build          # Compila el proyecto a dist/
+npm run test           # Ejecuta pruebas unitarias (si existen)
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## 🙋‍♂️ Autor
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+**Carlos Andres Ortega Yate**  
+📧 caortegayate@gmail.com  
+🔗 GitHub: [github.com/tuusuario](https://github.com/CarlosAndresOrtega)
+
+---
+
+<div align="center">
+
+_💡 Desarrollado con NestJS + PostgreSQL para Double V Partners_
+
+</div>
