@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Book } from './entities/book.entity';
@@ -15,7 +20,10 @@ export class BooksService {
   /**
    * Scrapea libros desde la web y los guarda en la base de datos
    */
-  async scrapeBooks(startPage = 1, totalPages = 1): Promise<{ pagesScraped: number; booksSaved: number }> {
+  async scrapeBooks(
+    startPage = 1,
+    totalPages = 1,
+  ): Promise<{ pagesScraped: number; booksSaved: number }> {
     let booksSaved = 0;
 
     for (let page = startPage; page < startPage + totalPages; page++) {
@@ -25,7 +33,9 @@ export class BooksService {
       const booksData = await this.scraperService.scrapePage(page);
 
       if (booksData.length === 0) {
-        console.log(`⚠️ Página ${page} no contenía libros. Deteniendo scraping.`);
+        console.log(
+          `⚠️ Página ${page} no contenía libros. Deteniendo scraping.`,
+        );
         break;
       }
 
@@ -130,6 +140,7 @@ export class BooksService {
       .where('book.category IS NOT NULL')
       .getRawMany();
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return categories.map((c) => c.category).filter(Boolean);
   }
 
@@ -137,6 +148,7 @@ export class BooksService {
    * Obtiene el rango de precios de los libros
    */
   async getPriceRange(): Promise<{ min: number; max: number }> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const prices = await this.booksRepository
       .createQueryBuilder('book')
       .select([
@@ -146,10 +158,10 @@ export class BooksService {
       .getRawOne();
 
     return {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       min: prices.min || 0,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       max: prices.max || 0,
     };
   }
-
-  
 }

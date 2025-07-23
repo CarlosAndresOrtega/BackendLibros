@@ -111,16 +111,16 @@ JWT_SECRET=supersecret
 
 ### 📚 Books
 
-| Método | Endpoint                                   | Descripción                                                 | Protegido |
-| ------ | ------------------------------------------ | ----------------------------------------------------------- | --------- |
-| GET    | /books                                     | Obtener todos los libros (paginación, filtros, orden)       | ✅        |
-| GET    | /books/:id                                 | Obtener un libro por ID                                     | ✅        |
-| DELETE | /books/:id                                 | Eliminar un libro por ID                                    | ✅        |
-| GET    | /books?rating=4                            | Filtrar libros por rating                                   | ✅        |
-| GET    | /books?category=A&priceMin=10&priceMax=100 | Filtrar por categoría y precio                              | ✅        |
-| GET    | /books/filters                             | Obtener filtros disponibles (categorías y rangos de precio) | ✅        |
-| GET    | /books/scrape-books?page=1&totalPages=2    | Scrapear libros con paginación                              | ✅        |
-| POST   | /books/scrape                              | Scrapear libros (versión alternativa, sin paginación)       | ✅        |
+| Método | Endpoint                                      | Descripción                                                 | Protegido |
+| ------ | --------------------------------------------- | ----------------------------------------------------------- | --------- |
+| GET    | /books                                        | Obtener todos los libros (paginación, filtros, orden)       | ✅        |
+| GET    | /books/:id                                    | Obtener un libro por ID                                     | ✅        |
+| DELETE | /books/:id                                    | Eliminar un libro por ID                                    | ✅        |
+| GET    | /books?category=Music                         | Filtrar libros por rating                                   | ✅        |
+| GET    | /books?category=Musi&priceMin=10&priceMax=100 | Filtrar por categoría y precio                              | ✅        |
+| GET    | /books/filters                                | Obtener filtros disponibles (categorías y rangos de precio) | ✅        |
+| GET    | /books/scrape-books?page=1&totalPages=2       | Scrapear libros con paginación                              | ✅        |
+| GET    | /books/scrape-books                           | Scrapear libros (versión alternativa, sin paginación)       | ✅        |
 
 ### 👤 Users
 
