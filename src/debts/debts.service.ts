@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Debt } from './entities/debt.entity';
 import { CreateDebtDto } from './dto/create-debt.dto';
+import { UpdateDebtDto } from './dto/update-debt.dto';
 
 @Injectable()
 export class DebtsService {
@@ -38,20 +39,30 @@ export class DebtsService {
   }
 
   async getStats(userId: number) {
-    const queryBuilder = this.debtRepository.createQueryBuilder('debt');
-
-    const stats = await queryBuilder
-      .select(
-        'SUM(CASE WHEN debt.isPaid = true THEN debt.amount ELSE 0 END)',
-        'totalPaid',
-      )
-      .addSelect(
-        'SUM(CASE WHEN debt.isPaid = false THEN debt.amount ELSE 0 END)',
-        'pendingBalance',
-      )
+    const stats = await this.debtRepository
+      .createQueryBuilder('debt')
+      .select('SUM(CASE WHEN debt.isPaid = false THEN CAST(debt.amount AS DECIMAL) ELSE 0 END)', 'pendingBalance')
+      .addSelect('SUM(CASE WHEN debt.isPaid = true THEN CAST(debt.amount AS DECIMAL) ELSE 0 END)', 'totalPaid')
       .where('debt.userId = :userId', { userId })
       .getRawOne();
+  
+    return {
+      pendingBalance: parseFloat(stats.pendingBalance || 0),
+      totalPaid: parseFloat(stats.totalPaid || 0),
+    };
+  }
 
-    return stats;
+  async update(id: number, updateDebtDto: UpdateDebtDto) {
+    const debt = await this.debtRepository.findOneBy({ id });
+    
+    if (!debt) throw new NotFoundException('Deuda no encontrada');
+  
+    // REGLA OBLIGATORIA: Una deuda pagada no puede ser modificada
+    if (debt.isPaid) {
+      throw new BadRequestException('No puedes modificar una deuda que ya ha sido pagada');
+    }
+  
+    Object.assign(debt, updateDebtDto);
+    return await this.debtRepository.save(debt);
   }
 }

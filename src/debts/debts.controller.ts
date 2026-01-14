@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+  UseInterceptors,
+} from '@nestjs/common';
 import { DebtsService } from './debts.service';
 import { CreateDebtDto } from './dto/create-debt.dto';
 import { UpdateDebtDto } from './dto/update-debt.dto';
@@ -25,7 +36,7 @@ export class DebtsController {
     return this.debtsService.findAll(req.user.id);
   }
 
-  @Get('stats') // Puntos extra: Agregaciones
+  @Get('stats')
   getStats(@Request() req) {
     return this.debtsService.getStats(req.user.id);
   }
@@ -33,5 +44,15 @@ export class DebtsController {
   @Patch(':id/pay') // Marcar como pagada (Requisito)
   markAsPaid(@Param('id') id: string) {
     return this.debtsService.markAsPaid(+id);
+  }
+
+  @Get('export/json')
+  async exportJson(@Request() req) {
+    const debts = await this.debtsService.findAll(req.user.id);
+    return {
+      reportDate: new Date().toISOString(),
+      totalRecords: debts.length,
+      data: debts,
+    };
   }
 }
