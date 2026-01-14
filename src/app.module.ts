@@ -6,6 +6,7 @@ import { BooksModule } from './books/books.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DebtsModule } from './debts/debts.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { DebtsModule } from './debts/debts.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    CacheModule.register(),
     BooksModule,
     AuthModule,
     UsersModule,
