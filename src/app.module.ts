@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DebtsModule } from './debts/debts.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
   imports: [
@@ -20,7 +21,14 @@ import { CacheModule } from '@nestjs/cache-manager';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    CacheModule.register(),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async () => ({
+        store: await redisStore({
+          socket: { host: 'localhost', port: 6379 },
+        }),
+      }),
+    }),
     BooksModule,
     AuthModule,
     UsersModule,
