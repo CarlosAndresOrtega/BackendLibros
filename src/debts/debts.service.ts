@@ -1,9 +1,12 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateDebtDto } from './dto/create-debt.dto';
-import { UpdateDebtDto } from './dto/update-debt.dto';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Debt } from './entities/debt.entity';
 import { Repository } from 'typeorm';
+import { Debt } from './entities/debt.entity';
+import { CreateDebtDto } from './dto/create-debt.dto';
 
 @Injectable()
 export class DebtsService {
@@ -12,31 +15,43 @@ export class DebtsService {
     private readonly debtRepository: Repository<Debt>,
   ) {}
 
-  create(createDebtDto: CreateDebtDto) {
-    return 'This action adds a new debt';
+  async create(createDebtDto: CreateDebtDto, userId: number) {
+    const newDebt = this.debtRepository.create({
+      ...createDebtDto,
+      user: { id: userId } as any, 
+    });
+    return await this.debtRepository.save(newDebt);
   }
 
-  findAll() {
-    return `This action returns all debts`;
+  async findAll(userId: number) {
+    return await this.debtRepository.find({
+      where: { user: { id: userId } },
+      order: { createdAt: 'DESC' },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} debt`;
-  }
-
-  async update(id: number, updateDebtDto: UpdateDebtDto) {
+  async markAsPaid(id: number) {
     const debt = await this.debtRepository.findOneBy({ id });
-
     if (!debt) throw new NotFoundException('Deuda no encontrada');
 
-    if (debt.isPaid) {
-      throw new BadRequestException('Una deuda pagada no puede ser modificada');
-    }
-
-    return await this.debtRepository.save({ ...debt, ...updateDebtDto });
+    return await this.debtRepository.save({ ...debt, isPaid: true });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} debt`;
+  async getStats(userId: number) {
+    const queryBuilder = this.debtRepository.createQueryBuilder('debt');
+
+    const stats = await queryBuilder
+      .select(
+        'SUM(CASE WHEN debt.isPaid = true THEN debt.amount ELSE 0 END)',
+        'totalPaid',
+      )
+      .addSelect(
+        'SUM(CASE WHEN debt.isPaid = false THEN debt.amount ELSE 0 END)',
+        'pendingBalance',
+      )
+      .where('debt.userId = :userId', { userId })
+      .getRawOne();
+
+    return stats;
   }
 }
