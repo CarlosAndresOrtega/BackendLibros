@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Debt } from 'src/debts/entities/debt.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class User {
@@ -9,5 +10,8 @@ export class User {
   username: string;
 
   @Column()
-  password: string; // Hasheada con bcrypt
+  password: string;
+
+  @OneToMany(() => Debt, (debt) => debt.user)
+  debts: Debt[];
 }
